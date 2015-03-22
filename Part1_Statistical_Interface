@@ -1,0 +1,46 @@
+#Assign variables to 
+lambda <- .2
+sim <- 1000
+n <- 40
+
+## Sample Mean & Variance ##
+#creates matrix of 1000 rows x 40 columns of randomly generated values in exponential distrubition with a mean, lambda = .2  
+matrix_exp <- matrix(rexp(sim * n, lambda), sim) 
+
+#calculate the mean of each of the rows
+mean_exp <- apply(matrix_exp, 1, mean)
+#calculate mean of sample mean
+mean(mean_exp)
+
+#calculate the mean of each of the rows
+var_exp <- apply(matrix_exp, 1, var)
+#calculate mean of sample variance
+mean(var_exp)
+
+##Theoretical Mean ##
+theo_mean <- 1/lambda
+theo_mean
+
+##Theoretical Variance ##
+theo_var <- (1/lambda)^2
+theo_var
+
+
+##Differences: Theoretical - Samples ##
+theo_mean - mean(mean_exp)
+theo_var - mean(var_exp)
+
+qqplot(qnorm(theo_mean), mean_exp, plot.it = TRUE)
+
+
+
+dat <- data.frame(x = mean_exp <- apply(matrix_exp, 1, mean))
+theo_sd <- ((1/lambda) * (1/sqrt(n)))
+
+g <- ggplot(dat, aes(x = mean_exp)) + geom_histogram(alpha = .20, binwidth=.3, colour = "black", aes(y = ..density..)) 
+g <- g + stat_function(fun=dnorm,args=list(mean=mean(mean_exp), sd=sd(mean_exp)),colour = "blue", size = 1)
+g <- g + stat_function(fun=dnorm,args=list(mean=theo_mean, sd=theo_sd),color = "red", size = .5)
+g <- g + geom_vline(xintercept = mean(mean_exp), colour = "blue", size=1)
+g <- g + geom_vline(xintercept = theo_mean, colour = 'red', size=.5, show_guide=TRUE)
+g <- g + labs(title="Distribution of Means", x="Means of Sample", y="Density")
+g <- g + theme_bw()
